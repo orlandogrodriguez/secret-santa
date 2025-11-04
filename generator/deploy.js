@@ -6,16 +6,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
 
-// Copy files from dist/ to deploy/ and docs/
+// Copy files from dist/ to docs/
 function copyToDeploy() {
     const distDir = path.join(projectRoot, 'dist');
-    const deployDir = path.join(projectRoot, 'deploy');
     const docsDir = path.join(projectRoot, 'docs');
-
-    // Ensure deploy directory exists
-    if (!fs.existsSync(deployDir)) {
-        fs.mkdirSync(deployDir, { recursive: true });
-    }
 
     // Ensure docs directory exists (for GitHub Pages)
     if (!fs.existsSync(docsDir)) {
@@ -73,28 +67,24 @@ function copyToDeploy() {
 </body>
 </html>`;
 
-    // Copy index.html to both deploy/ and docs/
-    const deployIndexPath = path.join(deployDir, 'index.html');
+    // Copy index.html to docs/
     const docsIndexPath = path.join(docsDir, 'index.html');
-    fs.writeFileSync(deployIndexPath, indexContent, 'utf-8');
     fs.writeFileSync(docsIndexPath, indexContent, 'utf-8');
 
-    // Copy all HTML files from dist/ to both deploy/ and docs/
+    // Copy all HTML files from dist/ to docs/
     const files = fs.readdirSync(distDir);
     let copiedCount = 0;
 
     files.forEach(file => {
         if (file.endsWith('.html')) {
             const srcPath = path.join(distDir, file);
-            const deployDestPath = path.join(deployDir, file);
             const docsDestPath = path.join(docsDir, file);
-            fs.copyFileSync(srcPath, deployDestPath);
             fs.copyFileSync(srcPath, docsDestPath);
             copiedCount++;
         }
     });
 
-    console.log(`✅ Copied ${copiedCount} HTML file(s) to deploy/ and docs/`);
+    console.log(`✅ Copied ${copiedCount} HTML file(s) to docs/`);
     console.log('📦 Ready for deployment!');
     console.log('\nNext steps:');
     console.log('1. For GitHub Pages: Configure Pages to use /docs folder');
