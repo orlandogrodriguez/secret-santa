@@ -6,10 +6,22 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
 
+// Read participants data
+function loadParticipants() {
+    const filePath = path.join(projectRoot, 'participants.json');
+    const data = fs.readFileSync(filePath, 'utf-8');
+    return JSON.parse(data);
+}
+
 // Copy files from dist/ to docs/
 function copyToDeploy() {
     const distDir = path.join(projectRoot, 'dist');
     const docsDir = path.join(projectRoot, 'docs');
+
+    // Load participants to get valid file IDs
+    const data = loadParticipants();
+    const participantIds = data.participants.map(p => p.id);
+    const validFilenames = new Set(participantIds.map(id => `${id}.html`));
 
     // Ensure docs directory exists (for GitHub Pages)
     if (!fs.existsSync(docsDir)) {
@@ -71,18 +83,40 @@ function copyToDeploy() {
     const docsIndexPath = path.join(docsDir, 'index.html');
     fs.writeFileSync(docsIndexPath, indexContent, 'utf-8');
 
-    // Copy all HTML files from dist/ to docs/
+    // Copy only HTML files that match current participant IDs
     const files = fs.readdirSync(distDir);
     let copiedCount = 0;
 
     files.forEach(file => {
-        if (file.endsWith('.html')) {
-            const srcPath = path.join(distDir, file);
-            const docsDestPath = path.join(docsDir, file);
-            fs.copyFileSync(srcPath, docsDestPath);
-            copiedCount++;
+        if (file.endsWith('.html') && file !== 'index.html') {
+            // Only copy files that match participant IDs (skip person1.html, person2.html, etc.)
+            if (validFilenames.has(file)) {
+                const srcPath = path.join(distDir, file);
+                const docsDestPath = path.join(docsDir, file);
+                fs.copyFileSync(srcPath, docsDestPath);
+                copiedCount++;
+            }
         }
     });
+
+    // Clean up any HTML files from docs/ that don't match current participant IDs
+    const docsFiles = fs.readdirSync(docsDir);
+    let removedCount = 0;
+    docsFiles.forEach(file => {
+        if (file.endsWith('.html') && file !== 'index.html') {
+            // Remove files that don't match valid participant IDs
+            if (!validFilenames.has(file)) {
+                const oldFilePath = path.join(docsDir, file);
+                fs.unlinkSync(oldFilePath);
+                console.log(`   🗑️  Removed old file: ${file}`);
+                removedCount++;
+            }
+        }
+    });
+
+    if (removedCount > 0) {
+        console.log(`   🧹 Cleaned up ${removedCount} old file(s) from docs/`);
+    }
 
     console.log(`✅ Copied ${copiedCount} HTML file(s) to docs/`);
     console.log('📦 Ready for deployment!');
