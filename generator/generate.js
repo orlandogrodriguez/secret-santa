@@ -36,26 +36,47 @@ function hashPassword(password) {
     return crypto.createHash('sha256').update(password).digest('hex');
 }
 
-// Generate circular matching with random shuffle
+// Check if a matching violates any exclusion rules
+function isValidMatching(matches, participants) {
+    for (const participant of participants) {
+        const match = matches.get(participant.id);
+        if (participant.exclude && match.id === participant.exclude) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Generate circular matching with random shuffle, respecting exclusions
 function generateCircularMatching(participants) {
-    // Create a copy and shuffle the order
-    const shuffled = [...participants];
+    const maxAttempts = 1000; // Prevent infinite loops
+    
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        // Create a copy and shuffle the order
+        const shuffled = [...participants];
 
-    // Fisher-Yates shuffle
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        // Fisher-Yates shuffle
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+
+        // Create circular matching: person[i] gifts person[i+1], last person gifts first
+        const matches = new Map();
+        for (let i = 0; i < shuffled.length; i++) {
+            const giver = shuffled[i];
+            const receiver = shuffled[(i + 1) % shuffled.length];
+            matches.set(giver.id, receiver);
+        }
+
+        // Check if this matching respects exclusion rules
+        if (isValidMatching(matches, participants)) {
+            return matches;
+        }
     }
 
-    // Create circular matching: person[i] gifts person[i+1], last person gifts first
-    const matches = new Map();
-    for (let i = 0; i < shuffled.length; i++) {
-        const giver = shuffled[i];
-        const receiver = shuffled[(i + 1) % shuffled.length];
-        matches.set(giver.id, receiver);
-    }
-
-    return matches;
+    // If we couldn't find a valid matching after many attempts, throw an error
+    throw new Error('Could not generate a valid matching that respects exclusion rules. Please check your exclusion settings.');
 }
 
 // Load HTML template
