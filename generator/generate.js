@@ -14,15 +14,18 @@ function loadParticipants() {
     return JSON.parse(data);
 }
 
-// Generate a random password (8-12 characters, alphanumeric + symbols)
+// Pet names for password generation
+const PET_NAMES = ['sunset', 'tommy', 'dj', 'lucy', 'guapo', 'leo', 'sammy', 'ginger', 'enzo'];
+
+// Generate a memorable password: pet name + 4 digits
 function generatePassword() {
-    const length = 8 + Math.floor(Math.random() * 5); // 8-12 characters
-    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*';
-    let password = '';
-    for (let i = 0; i < length; i++) {
-        password += charset.charAt(Math.floor(Math.random() * charset.length));
-    }
-    return password;
+    // Select a random pet name
+    const petName = PET_NAMES[Math.floor(Math.random() * PET_NAMES.length)];
+
+    // Generate 4 random digits
+    const digits = Math.floor(1000 + Math.random() * 9000).toString(); // 1000-9999
+
+    return petName + digits;
 }
 
 // Hash password using SHA-256
