@@ -173,12 +173,12 @@
     <div class="container">
         <h1>🎁 Secret Santa</h1>
         <p class="subtitle">Enter your password to reveal your match</p>
-        
+
         <div class="password-form">
-            <input 
-                type="password" 
-                id="passwordInput" 
-                class="password-input" 
+            <input
+                type="password"
+                id="passwordInput"
+                class="password-input"
                 placeholder="Enter your password"
                 autocomplete="off"
             >
@@ -199,8 +199,8 @@
 
     <script>
         // Password hash and match data embedded by generator
-        const PASSWORD_HASH = '364560f74f4e0015bc90dec5ca1f04592a6206e42bf38cc2c79277470d8589c7';
-        const MATCH_NAME = 'Person 5';
+        const PASSWORD_HASH = '3b608498465cffae73d7e351ebf4816bc90fdc55d461794c893978cafb2f4af4';
+        const MATCH_NAME = 'Isabel';
         const MAX_ATTEMPTS = 5;
         const ATTEMPTS_KEY = 'secret_santa_attempts';
 
@@ -240,7 +240,7 @@
         // Check password
         async function checkPassword() {
             const password = passwordInput.value.trim();
-            
+
             if (!password) {
                 showError('Please enter a password');
                 return;
@@ -253,7 +253,7 @@
             }
 
             const passwordHash = await hashPassword(password);
-            
+
             if (passwordHash === PASSWORD_HASH) {
                 // Correct password - reveal match
                 matchName.textContent = MATCH_NAME;
@@ -267,7 +267,7 @@
                 // Wrong password
                 const newAttempts = attempts + 1;
                 saveAttempts(newAttempts);
-                
+
                 if (newAttempts >= MAX_ATTEMPTS) {
                     showError(`Too many failed attempts. Please refresh the page and try again.`);
                 } else {
