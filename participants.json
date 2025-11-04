@@ -1,12 +1,13 @@
 {
   "participants": [
-    { "id": "dito", "name": "Dito" },
-    { "id": "cristina", "name": "Cristina" },
-    { "id": "julian", "name": "Julian" },
-    { "id": "alexandra", "name": "Alexandra" },
-    { "id": "isabel", "name": "Isabel" },
-    { "id": "henry", "name": "Henry" },
-    { "id": "nivea", "name": "Nivea" },
-    { "id": "orlando", "name": "Orlando" }
-  ]
+    { "id": "dito", "name": "Orlando G. Rodriguez" },
+    { "id": "cristina", "name": "Cristina Sanchez" },
+    { "id": "julian", "name": "Julian Rodriguez" },
+    { "id": "alexandra", "name": "Alexandra Lopez De Victoria" },
+    { "id": "isabel", "name": "Isabel Rodriguez" },
+    { "id": "henry", "name": "Henry Del Carmen" },
+    { "id": "nivea", "name": "Nivea Requena" },
+    { "id": "orlando", "name": "Orlando Rodriguez Vila" }
+  ],
+  "developerId": "dito"
 }

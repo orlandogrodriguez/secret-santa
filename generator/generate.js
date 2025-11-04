@@ -7,6 +7,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
 
+// GitHub Pages URL
+const SITE_URL = 'https://orlandogrodriguez.github.io/secret-santa';
+
 // Read participants data
 function loadParticipants() {
     const filePath = path.join(projectRoot, 'participants.json');
@@ -133,7 +136,7 @@ function generate() {
         const developerMatch = matches.get(developerId);
         const developerPassword = passwords.get(developerId);
         distributionContent += '🎁 YOUR MATCH:\n';
-        distributionContent += `   URL: [YOUR_SITE_URL]/${developerId}.html\n`;
+        distributionContent += `   URL: ${SITE_URL}/${encodeURIComponent(developerId)}.html\n`;
         distributionContent += `   Password: ${developerPassword}\n`;
         distributionContent += `   You are gifting: ${developerMatch.name}\n\n`;
     }
@@ -147,13 +150,11 @@ function generate() {
         const match = matches.get(participant.id);
         const password = passwords.get(participant.id);
         distributionContent += `\n${participant.name}:\n`;
-        distributionContent += `   URL: [YOUR_SITE_URL]/${participant.id}.html\n`;
+        distributionContent += `   URL: ${SITE_URL}/${encodeURIComponent(participant.id)}.html\n`;
         distributionContent += `   Password: ${password}\n`;
     }
 
     distributionContent += '\n' + '='.repeat(60) + '\n';
-    distributionContent += 'Note: Replace [YOUR_SITE_URL] with your actual deployment URL\n';
-    distributionContent += '='.repeat(60) + '\n';
 
     fs.writeFileSync(distributionPath, distributionContent, 'utf-8');
     console.log(`   ✓ Created distribution.txt`);
