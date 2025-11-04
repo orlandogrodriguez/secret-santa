@@ -48,17 +48,17 @@ npm run deploy
 
 ### 4. Set Up GitHub Pages
 
-You have two options:
-
-#### Option A: Deploy from `deploy/` folder (Recommended)
+**Recommended: Use `/docs` folder**
 
 1. Go to your repository on GitHub
 2. Click **Settings** tab
 3. Scroll down to **Pages** section (left sidebar)
 4. Under **Source**, select **Deploy from a branch**
 5. Select branch: **main**
-6. Select folder: **/deploy**
+6. Select folder: **/docs**
 7. Click **Save**
+
+**Note:** The `npm run deploy` command automatically copies files to both `/deploy` and `/docs` folders. The `/docs` folder is recommended for GitHub Pages because GitHub Pages supports it natively.
 
 #### Option B: Use GitHub Actions (Alternative)
 
@@ -104,7 +104,9 @@ After setting up Pages, your site will be available at:
 - **https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/person2.html**
 - etc.
 
-Note: It may take a few minutes for GitHub Pages to build and deploy.
+**Note:** If you use the `/docs` folder, you can access files directly without the `/docs` path in the URL. The URLs will be clean like `https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/person1.html` (not `.../docs/person1.html`).
+
+It may take a few minutes for GitHub Pages to build and deploy.
 
 ### 6. Update Distribution File
 
@@ -135,12 +137,15 @@ git push
 
 ## Troubleshooting
 
-- **404 Error**: Make sure you selected `/deploy` folder in Pages settings
+- **404 Error**: Make sure you selected `/docs` folder in Pages settings (not `/deploy`)
 - **Files not updating**: Wait 1-2 minutes for GitHub Pages to rebuild
 - **Can't see Pages option**: Make sure you're in the repository Settings tab, not GitHub account settings
+- **Can't select `/deploy` folder**: GitHub Pages doesn't support custom folders like `/deploy`. Use `/docs` instead, which is automatically created by `npm run deploy`
 
 ## Important Notes
 
 - The `dist/`, `deploy/`, `distribution.txt`, and `passwords.txt` files are gitignored by default
-- You may want to commit `deploy/` folder contents, but NOT `distribution.txt` or `passwords.txt` (they contain passwords)
+- You should commit the `/docs` folder contents so GitHub Pages can serve them
+- Do NOT commit `distribution.txt` or `passwords.txt` (they contain passwords)
 - GitHub Pages URLs are public (even for private repos), so anyone with the URL can access the page, but they still need the password
+- Each person's page now shows a personalized greeting: "Hi [Name]! Welcome to Coreillo Secret Santa!"

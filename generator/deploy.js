@@ -6,21 +6,24 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
 
-// Copy files from dist/ to deploy/
+// Copy files from dist/ to deploy/ and docs/
 function copyToDeploy() {
     const distDir = path.join(projectRoot, 'dist');
     const deployDir = path.join(projectRoot, 'deploy');
+    const docsDir = path.join(projectRoot, 'docs');
 
     // Ensure deploy directory exists
     if (!fs.existsSync(deployDir)) {
         fs.mkdirSync(deployDir, { recursive: true });
     }
 
-    // Copy index.html if it exists
-    const indexPath = path.join(projectRoot, 'deploy', 'index.html');
-    if (!fs.existsSync(indexPath)) {
-        // Create a simple index.html
-        const indexContent = `<!DOCTYPE html>
+    // Ensure docs directory exists (for GitHub Pages)
+    if (!fs.existsSync(docsDir)) {
+        fs.mkdirSync(docsDir, { recursive: true });
+    }
+
+    // Create index.html content
+    const indexContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -69,26 +72,34 @@ function copyToDeploy() {
     </div>
 </body>
 </html>`;
-        fs.writeFileSync(indexPath, indexContent, 'utf-8');
-    }
 
-    // Copy all HTML files from dist/ to deploy/
+    // Copy index.html to both deploy/ and docs/
+    const deployIndexPath = path.join(deployDir, 'index.html');
+    const docsIndexPath = path.join(docsDir, 'index.html');
+    fs.writeFileSync(deployIndexPath, indexContent, 'utf-8');
+    fs.writeFileSync(docsIndexPath, indexContent, 'utf-8');
+
+    // Copy all HTML files from dist/ to both deploy/ and docs/
     const files = fs.readdirSync(distDir);
     let copiedCount = 0;
 
     files.forEach(file => {
         if (file.endsWith('.html')) {
             const srcPath = path.join(distDir, file);
-            const destPath = path.join(deployDir, file);
-            fs.copyFileSync(srcPath, destPath);
+            const deployDestPath = path.join(deployDir, file);
+            const docsDestPath = path.join(docsDir, file);
+            fs.copyFileSync(srcPath, deployDestPath);
+            fs.copyFileSync(srcPath, docsDestPath);
             copiedCount++;
         }
     });
 
-    console.log(`✅ Copied ${copiedCount} HTML file(s) to deploy/`);
+    console.log(`✅ Copied ${copiedCount} HTML file(s) to deploy/ and docs/`);
     console.log('📦 Ready for deployment!');
     console.log('\nNext steps:');
-    console.log('1. Push deploy/ folder to GitHub Pages or Netlify');
+    console.log('1. For GitHub Pages: Configure Pages to use /docs folder');
+    console.log('   (Settings > Pages > Source: Deploy from a branch > /docs)');
+    console.log('   Your URLs will be: https://YOUR_USERNAME.github.io/YOUR_REPO/person1.html');
     console.log('2. Update [YOUR_SITE_URL] in distribution.txt');
     console.log('3. Send each person their URL and password');
 }

@@ -63,6 +63,7 @@ function generateHTMLFile(participant, match, passwordHash, template) {
     let html = template;
     html = html.replace('{{PASSWORD_HASH}}', passwordHash);
     html = html.replace('{{MATCH_NAME}}', match.name);
+    html = html.replace('{{PARTICIPANT_NAME}}', participant.name);
     return html;
 }
 
