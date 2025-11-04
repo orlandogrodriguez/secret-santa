@@ -65,11 +65,12 @@ function loadTemplate() {
 }
 
 // Generate HTML file for a participant
-function generateHTMLFile(participant, match, passwordHash, template) {
+function generateHTMLFile(participant, match, passwordHash, template, deploymentVersion) {
     let html = template;
     html = html.replace('{{PASSWORD_HASH}}', passwordHash);
     html = html.replace('{{MATCH_NAME}}', match.name);
     html = html.replace('{{PARTICIPANT_NAME}}', participant.name);
+    html = html.replace('{{DEPLOYMENT_VERSION}}', deploymentVersion);
     return html;
 }
 
@@ -104,6 +105,9 @@ function generate() {
     // Load template
     const template = loadTemplate();
 
+    // Generate deployment version (timestamp) to reset password attempts on new deployment
+    const deploymentVersion = Date.now().toString();
+
     // Ensure dist directory exists
     const distDir = path.join(projectRoot, 'dist');
     if (!fs.existsSync(distDir)) {
@@ -115,7 +119,7 @@ function generate() {
     for (const participant of participants) {
         const match = matches.get(participant.id);
         const passwordHash = passwordHashes.get(participant.id);
-        const html = generateHTMLFile(participant, match, passwordHash, template);
+        const html = generateHTMLFile(participant, match, passwordHash, template, deploymentVersion);
 
         const filename = `${participant.id}.html`;
         const filePath = path.join(distDir, filename);

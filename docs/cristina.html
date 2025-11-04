@@ -210,10 +210,11 @@
 
     <script>
         // Password hash and match data embedded by generator
-        const PASSWORD_HASH = '008e0b8728adde2fa8a3c36154fd590c6f6edc1538c0011cca952870f1788fd6';
-        const MATCH_NAME = 'Isabel Rodriguez';
+        const PASSWORD_HASH = 'bb83cf401894410017b921ef7c82d92934387a3606ebbeb0f34b5d63bf197cca';
+        const MATCH_NAME = 'Nivea Requena';
         const MAX_ATTEMPTS = 5;
-        const ATTEMPTS_KEY = 'secret_santa_attempts';
+        const DEPLOYMENT_VERSION = '1762262356867';
+        const ATTEMPTS_KEY = `secret_santa_attempts_${DEPLOYMENT_VERSION}`;
 
         const passwordInput = document.getElementById('passwordInput');
         const submitBtn = document.getElementById('submitBtn');
